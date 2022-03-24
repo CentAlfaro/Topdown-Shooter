@@ -58,3 +58,11 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+Topdown Shooter/Library/
+Topdown Shooter/[Ll]ibrary/
+Topdown Shooter/[Tt]emp/
+Topdown Shooter/[Oo]bj/
+Topdown Shooter/[Bb]uild/
+Topdown Shooter/[Bb]uilds/
+Topdown Shooter/[Ll]ogs/
+Topdown Shooter/[Mm]emoryCaptures/
