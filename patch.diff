@@ -1,0 +1,991 @@
+From 638151ad4dd2e5f3830e48b565a092f79673b6d0 Mon Sep 17 00:00:00 2001
+From: CentAlfaro <vincent.alfaro28@gmail.com>
+Date: Thu, 24 Mar 2022 12:50:51 +0800
+Subject: [PATCH] Added character movement and rotation
+
+---
+ .../.idea.Topdown Shooter/.idea/.gitignore    |  13 +
+ .../.idea.Topdown Shooter/.idea/encodings.xml |   4 +
+ .../.idea/indexLayout.xml                     |   8 +
+ .../.idea/.idea.Topdown Shooter/.idea/vcs.xml |   6 +
+ .../Assets/Scenes/SampleScene.unity           | 748 ++++++++++++++++++
+ .../Assets/Scripts/Characters.meta            |   8 +
+ .../Scripts/Characters/PlayerControls.cs      |  46 ++
+ .../PlayerControls.cs.meta}                   |   2 +-
+ Topdown Shooter/Assets/Scripts/testscript.cs  |  18 -
+ Topdown Shooter/Packages/manifest.json        |   2 +-
+ Topdown Shooter/Packages/packages-lock.json   |   2 +-
+ Topdown Shooter/UserSettings/Search.settings  |   1 +
+ 12 files changed, 837 insertions(+), 21 deletions(-)
+ create mode 100644 Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/.gitignore
+ create mode 100644 Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/encodings.xml
+ create mode 100644 Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/indexLayout.xml
+ create mode 100644 Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/vcs.xml
+ create mode 100644 Topdown Shooter/Assets/Scripts/Characters.meta
+ create mode 100644 Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs
+ rename Topdown Shooter/Assets/Scripts/{testscript.cs.meta => Characters/PlayerControls.cs.meta} (83%)
+ delete mode 100644 Topdown Shooter/Assets/Scripts/testscript.cs
+ create mode 100644 Topdown Shooter/UserSettings/Search.settings
+
+diff --git a/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/.gitignore b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/.gitignore
+new file mode 100644
+index 0000000..56afde5
+--- /dev/null
++++ b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/.gitignore	
+@@ -0,0 +1,13 @@
++﻿# Default ignored files
++/shelf/
++/workspace.xml
++# Rider ignored files
++/modules.xml
++/contentModel.xml
++/projectSettingsUpdater.xml
++/.idea.Topdown Shooter.iml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+diff --git a/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/encodings.xml b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/encodings.xml
+new file mode 100644
+index 0000000..df87cf9
+--- /dev/null
++++ b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/encodings.xml	
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Encoding" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise" />
++</project>
+\ No newline at end of file
+diff --git a/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/indexLayout.xml b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/indexLayout.xml
+new file mode 100644
+index 0000000..7b08163
+--- /dev/null
++++ b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/indexLayout.xml	
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="UserContentModel">
++    <attachedFolders />
++    <explicitIncludes />
++    <explicitExcludes />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/vcs.xml b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/vcs.xml
+new file mode 100644
+index 0000000..6c0b863
+--- /dev/null
++++ b/Topdown Shooter/.idea/.idea.Topdown Shooter/.idea/vcs.xml	
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/Topdown Shooter/Assets/Scenes/SampleScene.unity b/Topdown Shooter/Assets/Scenes/SampleScene.unity
+index 9421266..d8e2290 100644
+--- a/Topdown Shooter/Assets/Scenes/SampleScene.unity	
++++ b/Topdown Shooter/Assets/Scenes/SampleScene.unity	
+@@ -123,6 +123,203 @@ NavMeshSettings:
+     debug:
+       m_Flags: 0
+   m_NavMeshData: {fileID: 0}
++--- !u!1 &138983546
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 138983548}
++  - component: {fileID: 138983547}
++  m_Layer: 0
++  m_Name: Platform
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!212 &138983547
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 138983546}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.6415094, g: 0.11740828, b: 0.11740828, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!4 &138983548
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 138983546}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0.02, y: 0.03, z: 0}
++  m_LocalScale: {x: 14.142662, y: 8.148977, z: 1}
++  m_Children:
++  - {fileID: 210176359}
++  - {fileID: 851046015}
++  - {fileID: 1290801298}
++  - {fileID: 1606608282}
++  m_Father: {fileID: 0}
++  m_RootOrder: 1
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!1 &210176358
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 210176359}
++  - component: {fileID: 210176361}
++  - component: {fileID: 210176360}
++  m_Layer: 0
++  m_Name: barrier
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &210176359
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 210176358}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0, y: 0.51375, z: 0}
++  m_LocalScale: {x: 1, y: 0.026056537, z: 1}
++  m_Children: []
++  m_Father: {fileID: 138983548}
++  m_RootOrder: 0
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!61 &210176360
++BoxCollider2D:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 210176358}
++  m_Enabled: 1
++  m_Density: 1
++  m_Material: {fileID: 0}
++  m_IsTrigger: 0
++  m_UsedByEffector: 0
++  m_UsedByComposite: 0
++  m_Offset: {x: 0, y: 0}
++  m_SpriteTilingProperty:
++    border: {x: 0, y: 0, z: 0, w: 0}
++    pivot: {x: 0.5, y: 0.5}
++    oldSize: {x: 1, y: 1}
++    newSize: {x: 1, y: 1}
++    adaptiveTilingThreshold: 0.5
++    drawMode: 0
++    adaptiveTiling: 0
++  m_AutoTiling: 0
++  serializedVersion: 2
++  m_Size: {x: 1, y: 1}
++  m_EdgeRadius: 0
++--- !u!212 &210176361
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 210176358}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0, g: 1, b: 0.08155513, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
+ --- !u!1 &519420028
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -206,3 +403,554 @@ Transform:
+   m_Father: {fileID: 0}
+   m_RootOrder: 0
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!1 &553010945
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 553010946}
++  - component: {fileID: 553010947}
++  m_Layer: 0
++  m_Name: Gun
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &553010946
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 553010945}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -0.02, y: 0.52, z: 0}
++  m_LocalScale: {x: 0.18891288, y: 0.8382515, z: 1}
++  m_Children: []
++  m_Father: {fileID: 881211962}
++  m_RootOrder: 0
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &553010947
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 553010945}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 1, g: 1, b: 1, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &851046014
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 851046015}
++  - component: {fileID: 851046017}
++  - component: {fileID: 851046016}
++  m_Layer: 0
++  m_Name: barrier (1)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &851046015
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 851046014}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0, y: -0.51, z: 0}
++  m_LocalScale: {x: 1, y: 0.026056537, z: 1}
++  m_Children: []
++  m_Father: {fileID: 138983548}
++  m_RootOrder: 1
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!61 &851046016
++BoxCollider2D:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 851046014}
++  m_Enabled: 1
++  m_Density: 1
++  m_Material: {fileID: 0}
++  m_IsTrigger: 0
++  m_UsedByEffector: 0
++  m_UsedByComposite: 0
++  m_Offset: {x: 0, y: 0}
++  m_SpriteTilingProperty:
++    border: {x: 0, y: 0, z: 0, w: 0}
++    pivot: {x: 0.5, y: 0.5}
++    oldSize: {x: 1, y: 1}
++    newSize: {x: 1, y: 1}
++    adaptiveTilingThreshold: 0.5
++    drawMode: 0
++    adaptiveTiling: 0
++  m_AutoTiling: 0
++  serializedVersion: 2
++  m_Size: {x: 1, y: 1}
++  m_EdgeRadius: 0
++--- !u!212 &851046017
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 851046014}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0, g: 1, b: 0.08155513, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &881211958
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 881211962}
++  - component: {fileID: 881211961}
++  - component: {fileID: 881211960}
++  - component: {fileID: 881211959}
++  - component: {fileID: 881211963}
++  m_Layer: 0
++  m_Name: Player
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!58 &881211959
++CircleCollider2D:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 881211958}
++  m_Enabled: 1
++  m_Density: 1
++  m_Material: {fileID: 0}
++  m_IsTrigger: 0
++  m_UsedByEffector: 0
++  m_UsedByComposite: 0
++  m_Offset: {x: 0, y: 0}
++  serializedVersion: 2
++  m_Radius: 0.49999997
++--- !u!50 &881211960
++Rigidbody2D:
++  serializedVersion: 4
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 881211958}
++  m_BodyType: 0
++  m_Simulated: 1
++  m_UseFullKinematicContacts: 0
++  m_UseAutoMass: 0
++  m_Mass: 1
++  m_LinearDrag: 0
++  m_AngularDrag: 0.05
++  m_GravityScale: 0
++  m_Material: {fileID: 0}
++  m_Interpolate: 0
++  m_SleepingMode: 1
++  m_CollisionDetection: 0
++  m_Constraints: 4
++--- !u!212 &881211961
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 881211958}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
++  m_Color: {r: 0.02264148, g: 0.050717644, b: 1, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!4 &881211962
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 881211958}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -0.1666, y: 0.2166, z: -1}
++  m_LocalScale: {x: 0.6067, y: 0.6067, z: 0.6067}
++  m_Children:
++  - {fileID: 553010946}
++  m_Father: {fileID: 0}
++  m_RootOrder: 2
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!114 &881211963
++MonoBehaviour:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 881211958}
++  m_Enabled: 1
++  m_EditorHideFlags: 0
++  m_Script: {fileID: 11500000, guid: 0fab6f77b558e4948ab26bdaa313f7d8, type: 3}
++  m_Name: 
++  m_EditorClassIdentifier: 
++  movementSpeed: 5
++  rb: {fileID: 881211960}
++--- !u!1 &1290801297
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1290801298}
++  - component: {fileID: 1290801300}
++  - component: {fileID: 1290801299}
++  m_Layer: 0
++  m_Name: barrier (3)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &1290801298
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1290801297}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -0.5045, y: 0.00218, z: 0}
++  m_LocalScale: {x: 0.008443882, y: 1.0507706, z: 1}
++  m_Children: []
++  m_Father: {fileID: 138983548}
++  m_RootOrder: 2
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!61 &1290801299
++BoxCollider2D:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1290801297}
++  m_Enabled: 1
++  m_Density: 1
++  m_Material: {fileID: 0}
++  m_IsTrigger: 0
++  m_UsedByEffector: 0
++  m_UsedByComposite: 0
++  m_Offset: {x: 0, y: 0}
++  m_SpriteTilingProperty:
++    border: {x: 0, y: 0, z: 0, w: 0}
++    pivot: {x: 0.5, y: 0.5}
++    oldSize: {x: 1, y: 1}
++    newSize: {x: 1, y: 1}
++    adaptiveTilingThreshold: 0.5
++    drawMode: 0
++    adaptiveTiling: 0
++  m_AutoTiling: 0
++  serializedVersion: 2
++  m_Size: {x: 1, y: 1}
++  m_EdgeRadius: 0
++--- !u!212 &1290801300
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1290801297}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0, g: 1, b: 0.08155513, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &1606608281
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1606608282}
++  - component: {fileID: 1606608284}
++  - component: {fileID: 1606608283}
++  m_Layer: 0
++  m_Name: barrier (4)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &1606608282
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1606608281}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0.503, y: 0.00218, z: 0}
++  m_LocalScale: {x: 0.008443882, y: 1.0507706, z: 1}
++  m_Children: []
++  m_Father: {fileID: 138983548}
++  m_RootOrder: 3
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!61 &1606608283
++BoxCollider2D:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1606608281}
++  m_Enabled: 1
++  m_Density: 1
++  m_Material: {fileID: 0}
++  m_IsTrigger: 0
++  m_UsedByEffector: 0
++  m_UsedByComposite: 0
++  m_Offset: {x: 0, y: 0}
++  m_SpriteTilingProperty:
++    border: {x: 0, y: 0, z: 0, w: 0}
++    pivot: {x: 0.5, y: 0.5}
++    oldSize: {x: 1, y: 1}
++    newSize: {x: 1, y: 1}
++    adaptiveTilingThreshold: 0.5
++    drawMode: 0
++    adaptiveTiling: 0
++  m_AutoTiling: 0
++  serializedVersion: 2
++  m_Size: {x: 1, y: 1}
++  m_EdgeRadius: 0
++--- !u!212 &1606608284
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1606608281}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0, g: 1, b: 0.08155513, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
+diff --git a/Topdown Shooter/Assets/Scripts/Characters.meta b/Topdown Shooter/Assets/Scripts/Characters.meta
+new file mode 100644
+index 0000000..5b2536d
+--- /dev/null
++++ b/Topdown Shooter/Assets/Scripts/Characters.meta	
+@@ -0,0 +1,8 @@
++fileFormatVersion: 2
++guid: 2c3de3e0c24e90b4bbd4a6d89294160e
++folderAsset: yes
++DefaultImporter:
++  externalObjects: {}
++  userData: 
++  assetBundleName: 
++  assetBundleVariant: 
+diff --git a/Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs b/Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs
+new file mode 100644
+index 0000000..3f16b7e
+--- /dev/null
++++ b/Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs	
+@@ -0,0 +1,46 @@
++using System;
++using System.Collections;
++using System.Collections.Generic;
++using UnityEngine;
++
++
++public class PlayerControls : MonoBehaviour
++{
++    [SerializeField] Camera sceneCamera;
++    [SerializeField] private float movementSpeed = 5;
++    [SerializeField] private Rigidbody2D rb;
++    private Vector2 _moveDirection;
++    private Vector2 _mousePosition;
++    void Start()
++    {
++        
++    }
++    
++    void Update()
++    {
++        ProcessInputs();
++    }
++
++    private void FixedUpdate()
++    {
++        Move();
++    }
++
++    void ProcessInputs()
++    {
++        float horizontalInput = Input.GetAxisRaw("Horizontal");
++        float verticalInput = Input.GetAxisRaw("Vertical");
++        _moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
++        
++        _mousePosition = sceneCamera.ScreenToWorldPoint(Input.mousePosition);
++    }
++
++    void Move()
++    {
++        rb.velocity = new Vector2(_moveDirection.x * movementSpeed, _moveDirection.y * movementSpeed);
++        
++        Vector2 aimDirection = _mousePosition - rb.position;
++        float aimAngle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg - 90f;
++        rb.rotation = aimAngle;
++    }
++}
+diff --git a/Topdown Shooter/Assets/Scripts/testscript.cs.meta b/Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs.meta
+similarity index 83%
+rename from Topdown Shooter/Assets/Scripts/testscript.cs.meta
+rename to Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs.meta
+index 10ba54f..e7ab0c1 100644
+--- a/Topdown Shooter/Assets/Scripts/testscript.cs.meta	
++++ b/Topdown Shooter/Assets/Scripts/Characters/PlayerControls.cs.meta	
+@@ -1,5 +1,5 @@
+ fileFormatVersion: 2
+-guid: 09a5e372375a08443a01ecfaafce914f
++guid: 0fab6f77b558e4948ab26bdaa313f7d8
+ MonoImporter:
+   externalObjects: {}
+   serializedVersion: 2
+diff --git a/Topdown Shooter/Assets/Scripts/testscript.cs b/Topdown Shooter/Assets/Scripts/testscript.cs
+deleted file mode 100644
+index 1e36e97..0000000
+--- a/Topdown Shooter/Assets/Scripts/testscript.cs	
++++ /dev/null
+@@ -1,18 +0,0 @@
+-using System.Collections;
+-using System.Collections.Generic;
+-using UnityEngine;
+-
+-public class testscript : MonoBehaviour
+-{
+-    // Start is called before the first frame update
+-    void Start()
+-    {
+-        
+-    }
+-
+-    // Update is called once per frame
+-    void Update()
+-    {
+-        
+-    }
+-}
+diff --git a/Topdown Shooter/Packages/manifest.json b/Topdown Shooter/Packages/manifest.json
+index 863ec32..d94cdd3 100644
+--- a/Topdown Shooter/Packages/manifest.json	
++++ b/Topdown Shooter/Packages/manifest.json	
+@@ -8,7 +8,7 @@
+     "com.unity.2d.tilemap": "1.0.0",
+     "com.unity.2d.tilemap.extras": "2.2.0",
+     "com.unity.collab-proxy": "1.13.5",
+-    "com.unity.ide.rider": "3.0.7",
++    "com.unity.ide.rider": "3.0.12",
+     "com.unity.ide.visualstudio": "2.0.11",
+     "com.unity.ide.vscode": "1.2.4",
+     "com.unity.test-framework": "1.1.29",
+diff --git a/Topdown Shooter/Packages/packages-lock.json b/Topdown Shooter/Packages/packages-lock.json
+index a3a971a..780aaf6 100644
+--- a/Topdown Shooter/Packages/packages-lock.json	
++++ b/Topdown Shooter/Packages/packages-lock.json	
+@@ -102,7 +102,7 @@
+       "url": "https://packages.unity.com"
+     },
+     "com.unity.ide.rider": {
+-      "version": "3.0.7",
++      "version": "3.0.12",
+       "depth": 0,
+       "source": "registry",
+       "dependencies": {
+diff --git a/Topdown Shooter/UserSettings/Search.settings b/Topdown Shooter/UserSettings/Search.settings
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/Topdown Shooter/UserSettings/Search.settings	
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+-- 
+2.34.1.windows.1
+
