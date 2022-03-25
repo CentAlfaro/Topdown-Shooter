@@ -8,11 +8,6 @@ namespace Characters.PlayerClass
         [SerializeField] private Weapon weaponOne;
         [SerializeField] private Weapon weaponTwo;
         [SerializeField] private Weapon weaponThree;
-        public override void Update()
-        {
-            ProcessInputs();
-        }
-
         protected override void ProcessInputs()
         {
             if(Input.GetMouseButtonDown(0))
@@ -22,7 +17,6 @@ namespace Characters.PlayerClass
                 weaponThree.Fire();
                 
             }
-
             base.ProcessInputs();
         }
     }

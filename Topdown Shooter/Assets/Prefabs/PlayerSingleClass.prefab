@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc137a56476e78429e2e7cb8ac86245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
+  characterData: {fileID: 11400000, guid: f1477dcd7542f7d4cb7d1dec8a222ae0, type: 2}
   rb: {fileID: 1228691594356952686}
   weaponOne: {fileID: 1228691594561450834}
 --- !u!1 &1228691594447156414

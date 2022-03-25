@@ -4,14 +4,11 @@ namespace Characters
 {
     public class Character : MonoBehaviour
     {
-        [SerializeField] private float movementSpeed = 5;
+        [SerializeField] private CharacterData characterData;
+        
         [SerializeField] private Rigidbody2D rb;
 
-        protected float MovementSpeed
-        {
-            get => movementSpeed;
-            set => movementSpeed = value;
-        }
+        protected CharacterData CharacterData => characterData;
 
         protected Rigidbody2D Rb
         {

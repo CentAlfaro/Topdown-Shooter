@@ -1,23 +1,17 @@
 using Characters;
+using Interfaces;
 using UnityEngine;
 
 namespace Weapons
 {
     public class Bullet : MonoBehaviour
     {
-        [SerializeField] private Rigidbody2D rb;
         public void OnTriggerEnter2D(Collider2D col)
         {
-            switch (col.gameObject.tag)
-            {
-                case "barrier":
-                    Destroy(gameObject);
-                    break;
-                case "enemy":
-                    col.gameObject.GetComponent<Enemy>().enemyHealth -= 20f;
-                    Destroy(gameObject);
-                    break;
-            }
+            var enemyGoGameObject = col.gameObject;
+            var enemyScript = enemyGoGameObject.GetComponent<IDamageable>();
+            enemyScript?.Damage(20);
+            Destroy(gameObject);
         }
     }
 }

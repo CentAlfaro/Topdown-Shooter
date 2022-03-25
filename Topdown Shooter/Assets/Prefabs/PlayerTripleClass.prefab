@@ -468,7 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2fec29e3ffd684ba80660127ff3a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 5
+  characterData: {fileID: 11400000, guid: f1477dcd7542f7d4cb7d1dec8a222ae0, type: 2}
   rb: {fileID: 7707762779043789372}
   weaponOne: {fileID: 3658159660275779547}
   weaponTwo: {fileID: 2426505798035142807}
