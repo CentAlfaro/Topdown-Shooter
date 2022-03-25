@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Characters
 {
-    public class EnemyControl : Character
+    public class Enemy : Character
     {
         private GameObject _playerTracked;
         public float enemyHealth = 100;
