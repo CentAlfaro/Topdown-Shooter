@@ -1,3 +1,4 @@
+using Achievements;
 using UnityEngine;
 using Weapons;
 
@@ -15,6 +16,7 @@ namespace Characters.PlayerClass
                 weaponOne.Fire();
                 weaponTwo.Fire();
                 weaponThree.Fire();
+                AchievementsManager.Instance.UpdateAchievements(AchievementTypes.ButtonPress, 1);
                 
             }
             base.ProcessInputs();
