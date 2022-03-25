@@ -5,7 +5,6 @@ namespace Characters
 {
     public class Player : Character
     {
-        // [SerializeField] private Camera sceneCamera;
         private Vector2 _moveDirection;
         private Vector2 _mousePosition;
 
@@ -16,7 +15,7 @@ namespace Characters
 
         public override void Update()
         {
-            ProcessInputs();
+            
             base.Update();
         }
 
@@ -30,7 +29,7 @@ namespace Characters
             var horizontalInput = Input.GetAxisRaw("Horizontal");
             var verticalInput = Input.GetAxisRaw("Vertical");
             _moveDirection = new Vector2(horizontalInput, verticalInput).normalized;
-            _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            if (Camera.main != null) _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
 
         private void Move()

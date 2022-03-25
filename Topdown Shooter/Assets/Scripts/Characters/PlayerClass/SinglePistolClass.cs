@@ -6,7 +6,6 @@ namespace Characters.PlayerClass
     public class SinglePistolClass : Player
     {
         [SerializeField] private Weapon weaponOne;
-        // Update is called once per frame
         public override void Update()
         {
             ProcessInputs();

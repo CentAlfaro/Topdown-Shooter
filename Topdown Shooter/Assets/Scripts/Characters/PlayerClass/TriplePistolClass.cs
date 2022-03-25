@@ -8,7 +8,6 @@ namespace Characters.PlayerClass
         [SerializeField] private Weapon weaponOne;
         [SerializeField] private Weapon weaponTwo;
         [SerializeField] private Weapon weaponThree;
-        // Update is called once per frame
         public override void Update()
         {
             ProcessInputs();
