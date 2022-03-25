@@ -965,7 +965,6 @@ MonoBehaviour:
   achievements:
   - {fileID: 11400000, guid: 4c3713f3fa4cf874b9a18629d40bba30, type: 2}
   - {fileID: 11400000, guid: fbee4d00ff19ad54e9606ba876c08dcc, type: 2}
-  - {fileID: 11400000, guid: 54f280551d277584aa9e59e9a4ee84c0, type: 2}
   achievementLayoutGroup: {fileID: 1496596034}
   achievementPanel: {fileID: 1202493088}
   achievementContent: {fileID: 1496596032}
@@ -3680,6 +3679,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 6975641559153620802, guid: 130704d0146b90e4aae3191ee621298f, type: 3}
+  initialSpawnTime: 1
+  spawnRepeatRate: 1.5
 --- !u!4 &1923451530
 Transform:
   m_ObjectHideFlags: 0

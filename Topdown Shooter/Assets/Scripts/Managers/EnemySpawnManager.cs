@@ -6,10 +6,12 @@ namespace Managers
     public class EnemySpawnManager : MonoBehaviour
     {
         [SerializeField] private GameObject enemy;
+        [SerializeField] private float initialSpawnTime;
+        [SerializeField] private float spawnRepeatRate;
 
         private void Start()
         {
-            InvokeRepeating(nameof(SpawnEnemy),1f, 2f);
+            InvokeRepeating(nameof(SpawnEnemy), initialSpawnTime, spawnRepeatRate);
         }
 
         private void SpawnEnemy()
